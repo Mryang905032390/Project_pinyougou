@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angularjs入门demo之表达式</title>
+    <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("myapp", []);
+        app.controller("myctrl", function ($scope,$http) {
+            $http.get("../brand/findAll.do").success(function (response) {
+                $scope.brandList=response;
+            })
+        });
+    </script>
+</head>
+<body ng-app="myapp" ng-controller="myctrl">
+<table>
+    <tr>
+        <th>编号</th>
+        <th>名称</th>
+        <th>首字母</th>
+    </tr>
+    <tr ng-repeat="brand in brandList">
+        <th>{{brand.id}}</th>
+        <th>{{brand.name}}</th>
+        <th>{{brand.firstChar}}</th>
+    </tr>
+</table>
+
+</body>
+</html>

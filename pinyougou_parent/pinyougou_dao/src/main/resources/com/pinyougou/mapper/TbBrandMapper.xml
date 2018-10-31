@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pinyougou.mapper.TbBrandMapper" >
+
+    <select id="fandAll" resultType="tbBrand" parameterType="list">
+        select id,name,first_char as firstChar from tb_brand
+    </select>
+    
+    <insert id="insert" parameterType="tbBrand">
+        insert into tb_brand values(#{id},#{name},#{firstChar})
+    </insert>
+
+    <select id="selectByParmaryKey" resultType="tbBrand" parameterType="Long">
+        select id,name,first_char as firstChar from tb_brand where id = #{id}
+    </select>
+
+    <update id="update" parameterType="tbBrand">
+        update tb_brand set name=#{name},first_char=#{firstChar} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from tb_brand where id=#{id}
+    </delete>
+</mapper>

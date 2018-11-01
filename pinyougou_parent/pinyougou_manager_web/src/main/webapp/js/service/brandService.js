@@ -1,8 +1,8 @@
 app.service("brandService", function ($http) {
 
             this.findPage = function (currentPage,itemsPerPage) {
-                return $http.get("../brand/findPage.do?pageNum=" + currentPage
-                    + "&pageSize=" + itemsPerPage);
+                return $http.post("../brand/findPage.do?pageNum=" + currentPage
+                    + "&pageSize=" + itemsPerPage,);
             }
 
             this.add = function (entity) {

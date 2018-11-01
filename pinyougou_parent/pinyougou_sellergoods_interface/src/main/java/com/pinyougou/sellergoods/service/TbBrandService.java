@@ -1,8 +1,7 @@
 package com.pinyougou.sellergoods.service;
 
-import com.pinyougou.entity.PageResult;
-import com.pinyougou.entity.Result;
 import com.pinyougou.pojo.TbBrand;
+import entity.PageResult;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ public interface TbBrandService {
 
     public List<TbBrand> fandAll();
 
-    public PageResult findPage(Integer pageNum,Integer pageSize);
+    public PageResult selectByExample(Integer pageNum, Integer pageSize);
 
     void add(TbBrand brand);
 

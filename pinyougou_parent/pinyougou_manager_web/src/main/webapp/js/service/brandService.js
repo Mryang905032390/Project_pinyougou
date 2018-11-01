@@ -2,7 +2,7 @@ app.service("brandService", function ($http) {
 
             this.findPage = function (currentPage,itemsPerPage) {
                 return $http.post("../brand/findPage.do?pageNum=" + currentPage
-                    + "&pageSize=" + itemsPerPage,);
+                    + "&pageSize=" + itemsPerPage,searchEntity);
             }
 
             this.add = function (entity) {

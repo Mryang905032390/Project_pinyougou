@@ -1,8 +1,10 @@
-app.controller("brandController", function ($scope, brandService,$controller) {
+app.controller("specificationController", function ($scope, specificationService,$controller) {
+
     $controller("baseController",{$scope:$scope});
+    //条件分页查询
     $scope.searchEntity={};
-    $scope.search = function (currentPage,itemsPerPage) {
-        brandService.findPage(currentPage,itemsPerPage,$scope.searchEntity).success(function (response) {
+    $scope.search = function (pageNum,pageSize) {
+        specificationService.search(pageNum,pageSize,$scope.searchEntity).success(function (response) {
             $scope.paginationConf.totalItems = response.total;
             $scope.list = response.rows;
         })
@@ -12,9 +14,9 @@ app.controller("brandController", function ($scope, brandService,$controller) {
     $scope.save = function () {
         var method = null;
         if ($scope.entity.id != null) {
-            method = brandService.update($scope.entity);
+            method = specificationService.update($scope.entity);
         } else {
-            method = brandService.add($scope.entity);
+            method = specificationService.add($scope.entity);
         }
 
         method.success(function (response) {
@@ -28,14 +30,14 @@ app.controller("brandController", function ($scope, brandService,$controller) {
     }
 
     $scope.findOne = function (id) {
-        brandService.findOne(id).success(function (response) {
+        specificationService.findOne(id).success(function (response) {
             $scope.entity = response;
         });
     };
 
     $scope.dele = function () {
         if (confirm("确定要进行删除吗？")) {
-            brandService.dele($scope.selectIds).success(
+            specificationService.dele($scope.selectIds).success(
                 function (response) {
                     if (response.success) {
                         $scope.reloadList();//刷新列表

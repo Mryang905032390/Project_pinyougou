@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -97,5 +98,10 @@ public class SpecificationServiceImple implements SpecificationService {
             criteria.andSpecIdEqualTo(id);
             tbSpecificationOptionMapper.deleteByExample(example);
         }
+    }
+
+    @Override
+    public List<Map> selectSpecList() {
+        return tbSpecificationMapper.selectSpecList();
     }
 }

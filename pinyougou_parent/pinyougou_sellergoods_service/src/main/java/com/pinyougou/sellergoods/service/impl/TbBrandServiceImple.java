@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+
 @Service
 @Transactional
 public class TbBrandServiceImple implements TbBrandService {
@@ -48,5 +50,10 @@ public class TbBrandServiceImple implements TbBrandService {
         for (Long id : ids) {
             brandMapper.deleteByPrimaryKey(id);
         }
+    }
+
+    @Override
+    public List<Map> selectBrandList() {
+        return brandMapper.selectBrandList();
     }
 }

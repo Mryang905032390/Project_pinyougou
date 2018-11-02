@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/brand")
@@ -64,5 +65,11 @@ public class TbBrandController {
             e.printStackTrace();
             return new Result(false, "删除失败");
         }
+    }
+
+    //查询模板关联的品牌下拉列表数据
+    @RequestMapping("/selectBrandList")
+    public List<Map> selectBrandList(){
+        return tbBrandService.selectBrandList();
     }
 }

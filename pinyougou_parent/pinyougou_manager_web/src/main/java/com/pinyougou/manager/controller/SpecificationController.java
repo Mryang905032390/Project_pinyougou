@@ -49,4 +49,16 @@ public class SpecificationController {
         //查询规格
         return specificationService.findOne(id);
     }
+
+
+    @RequestMapping("/delete")
+    public Result delete(Long[] ids) {
+        try {
+            specificationService.delete(ids);
+            return new Result(true, "修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "修改失败");
+        }
+    }
 }

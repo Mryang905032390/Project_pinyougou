@@ -39,7 +39,7 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-default" ng-click="entity={tbSpecification:{},specificationOptions:[]}" title="新建" data-toggle="modal" data-target="#editModal"><i class="fa fa-file-o"></i> 新建
                     </button>
-                    <button type="button" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>
+                    <button type="button" ng-click="dele()" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>
 
                     <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i
                             class="fa fa-refresh"></i> 刷新
@@ -68,7 +68,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="pojo in list">
-                <td><input type="checkbox"></td>
+                <td><input ng-click="updateSelection($event,pojo.id)" type="checkbox"></td>
                 <td>{{pojo.id}}</td>
                 <td>{{pojo.specName}}</td>
                 <td class="text-center">

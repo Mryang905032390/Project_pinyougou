@@ -86,4 +86,16 @@ public class SpecificationServiceImple implements SpecificationService {
             tbSpecificationOptionMapper.insert(specificationOption);
         }
     }
+
+    @Override
+    public void delete(Long[] ids) {
+        for (Long id : ids) {
+            tbSpecificationMapper.deleteByPrimaryKey(id);
+
+            TbSpecificationOptionExample example = new TbSpecificationOptionExample();
+            TbSpecificationOptionExample.Criteria criteria = example.createCriteria();
+            criteria.andSpecIdEqualTo(id);
+            tbSpecificationOptionMapper.deleteByExample(example);
+        }
+    }
 }

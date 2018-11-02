@@ -1,6 +1,6 @@
 app.service("brandService", function ($http) {
 
-            this.findPage = function (currentPage,itemsPerPage) {
+            this.findPage = function (currentPage,itemsPerPage,searchEntity) {
                 return $http.post("../brand/findPage.do?pageNum=" + currentPage
                     + "&pageSize=" + itemsPerPage,searchEntity);
             }
@@ -20,5 +20,4 @@ app.service("brandService", function ($http) {
             this.dele = function (ids) {
                 return $http.get('../brand/delete.do?ids=' + ids);
             }
-
         });

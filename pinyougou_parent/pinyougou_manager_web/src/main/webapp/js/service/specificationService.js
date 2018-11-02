@@ -16,6 +16,6 @@ app.service("specificationService", function ($http) {
         return $http.get('../specification/delete.do?ids=' + ids);
     }
     this.search = function (pageNum, pageSize, searchEntity) {
-        return $http.post("../specification/search.do?pageNum="+pageNum+"&pageSize="+pageSize,searchEntity);
+        return $http.post("../specification/search.do?pageNum=" + pageNum + "&pageSize=" + pageSize, searchEntity);
     }
 });

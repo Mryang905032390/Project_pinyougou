@@ -1,33 +1,54 @@
-app.controller("baseController",function ($scope) {
-
-    //分页配置对象
-    $scope.paginationConf = {
-        currentPage: 1,
-        totalItems: 10,
-        itemsPerPage: 10,
-        perPageOptions: [10, 20, 30, 40, 50],
-        onChange: function () {
-            $scope.reloadList();
-        }
-    };
-
-    $scope.reloadList = function () {
-        $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+ //品牌控制层 
+app.controller('baseController' ,function($scope){	
+	
+    //重新加载列表 数据
+    $scope.reloadList=function(){
+    	//切换页码  
+    	$scope.search( $scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);	   	
     }
+    
+	//分页控件配置 
+	$scope.paginationConf = {
+         currentPage: 1,
+         totalItems: 10,
+         itemsPerPage: 10,
+         perPageOptions: [10, 20, 30, 40, 50],
+         onChange: function(){
+        	 $scope.reloadList();//重新加载
+     	 }
+	}; 
+	
+	$scope.selectIds=[];//选中的ID集合 
 
-    //记录选中的id的数组
-    $scope.selectIds = [];
+	//更新复选
+	$scope.updateSelection = function($event, id) {		
+		if($event.target.checked){//如果是被选中,则增加到数组
+			$scope.selectIds.push( id);			
+		}else{
+			var idx = $scope.selectIds.indexOf(id);
+            $scope.selectIds.splice(idx, 1);//删除 
+		}
+	}
+	
+	//去数组中对象的属性值，拼接为字符串
+	$scope.selectValueByKey=function (jsonString,key) {
+		//alert(jsonString);
+		//[{"id":27,"text":"网络"},{"id":32,"text":"机身内存"}]
+		var value="";
+		var objList =JSON.parse(jsonString);
+		for(var i=0;i<objList.length;i++){
+			//从json对象中，根据属性名取属性值的方式，有两种方法
+			//1、如果属性名是确定值，对象.属性名
+			//2、如果属性名是变量，取值方式为 对象[属性名]
 
-    //复选框勾选和取消勾选
-    $scope.updateSelection = function ($event, id) {
-        //判断复选框勾选状态
-        if ($event.target.checked) {
-            //往数组中添加值调用js的push实现
-            $scope.selectIds.push(id);
-        } else {
-            var index = $scope.selectIds.indexOf(id);
-            //从数组中移除元素
-            $scope.selectIds.splice(index, 1);
-        }
+			if(i==0){
+                value+= objList[i][key];
+			}else {
+                value+=","+ objList[i][key];
+			}
+
+		}
+		return value;
     }
-});
+	
+});	

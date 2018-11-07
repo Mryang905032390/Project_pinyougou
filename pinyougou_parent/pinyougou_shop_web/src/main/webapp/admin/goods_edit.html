@@ -192,7 +192,7 @@
 			                        </div>
                             	</div>
                             	<p>
-                                    {{entity.goodsDesc.specificationItems}}
+                                    {{entity.itemList}}
                             	<div>
                             	
 	                                <div class="row data-type">
@@ -201,7 +201,7 @@
 					                        <div class="col-md-10 data">
 					                               
 					                            <span ng-repeat="option in spec.options">
-					                            	<input  type="checkbox" ng-click="updateSpecAttribute(option.optionName,$event,spec.text)">{{option.optionName}}
+					                            	<input  type="checkbox" ng-click="updateSpecAttribute(option.optionName,$event,spec.text);createItemList()">{{option.optionName}}
 					                            </span>
 					                        </div>
 		                                </div>
@@ -213,8 +213,7 @@
 	                                	 <table class="table table-bordered table-striped table-hover dataTable">
 						                    <thead>
 						                        <tr>					                          
-												    <th class="sorting">屏幕尺寸</th>
-													<th class="sorting">网络制式</th>
+												    <th class="sorting" ng-repeat="spec in entity.goodsDesc.specificationItems">{{spec.attributeName}}</th>
 												    <th class="sorting">价格</th>
 												    <th class="sorting">库存</th>
 												    <th class="sorting">是否启用</th>
@@ -222,87 +221,23 @@
 											    </tr>
 								            </thead>
 						                    <tbody>
-						                      <tr>					                           
-										            <td>
-										            	4.0
-										            </td>
-													<td>
-										            	3G
+						                      <tr ng-repeat="item in entity.itemList">
+										            <td ng-repeat="specification in entity.goodsDesc.specificationItems">
+                                                        {{item.spec[specification.attributeName]}}
 										            </td>
 										            <td>
-										           		<input class="form-control"  placeholder="价格">
+										           		<input class="form-control" ng-model="item.price" placeholder="价格">
 										            </td>
 										            <td>
-										            	<input class="form-control" placeholder="库存数量">
+										            	<input class="form-control" ng-model="item.num" placeholder="库存数量">
 										            </td>
 										            <td>
-										             	<input type="checkbox" >
+										             	<input ng-model="item.status" type="checkbox" ng-true-value="1" ng-false-value="0">
 										            </td>
 										            <td>
-										                <input type="checkbox" >									             	
+										                <input ng-model="item.isDefault" type="checkbox" ng-true-value="1" ng-false-value="0">
 										            </td>
 						                      </tr>
-											  <tr>					                           
-										            <td>
-										            	4.0
-										            </td>
-													<td>
-										            	4G
-										            </td>
-										            <td>
-										           		<input class="form-control"  placeholder="价格">
-										            </td>
-										            <td>
-										            	<input class="form-control" placeholder="库存数量">
-										            </td>
-										            <td>
-										             	<input type="checkbox" >
-										            </td>
-										            <td>
-										                <input type="checkbox" >									             	
-										            </td>
-						                      </tr>
-											  <tr>					                           
-													<td>
-										            	5.0
-										            </td>
-													<td>
-										            	3G
-										            </td>
-										            <td>
-										           		<input class="form-control"  placeholder="价格">
-										            </td>
-										            <td>
-										            	<input class="form-control" placeholder="库存数量">
-										            </td>
-										            <td>
-										             	<input type="checkbox" >
-										            </td>
-										            <td>
-										                <input type="checkbox" >									             	
-										            </td>
-						                      </tr>
-											  <tr>					                           
-													<td>
-										            	5.0
-										            </td>
-													<td>
-										            	4G
-										            </td>
-										            <td>
-										           		<input class="form-control"  placeholder="价格">
-										            </td>
-										            <td>
-										            	<input class="form-control" placeholder="库存数量">
-										            </td>
-										            <td>
-										             	<input type="checkbox" >
-										            </td>
-										            <td>
-										                <input type="checkbox" >									             	
-										            </td>
-						                      </tr>
-											  
 						                    </tbody>
 									 	</table>
 								

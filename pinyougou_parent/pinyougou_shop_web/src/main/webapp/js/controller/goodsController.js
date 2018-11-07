@@ -156,20 +156,46 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
     }
     //规格选项勾选和取消勾选组装规格结果集功能
     $scope.updateSpecAttribute = function (optionName, $event, text) {
-        var specObject = $scope.getObjectByName($scope.entity.goodsDesc.specificationItems,"attributeName",text)
-        if (specObject!=null){
-            if($event.target.checked){
+        var specObject = $scope.getObjectByName($scope.entity.goodsDesc.specificationItems, "attributeName", text)
+        if (specObject != null) {
+            if ($event.target.checked) {
                 specObject.attributeValue.push(optionName);
-            }else{
+            } else {
                 var index = specObject.attributeValue.indexOf(optionName);
-                specObject.attributeValue.splice(index,1);
-                if(specObject.attributeValue.length==0){
+                specObject.attributeValue.splice(index, 1);
+                if (specObject.attributeValue.length == 0) {
                     var index1 = $scope.entity.goodsDesc.specificationItems.indexOf(specObject);
-                    $scope.entity.goodsDesc.specificationItems.splice(index1,1);
+                    $scope.entity.goodsDesc.specificationItems.splice(index1, 1);
                 }
             }
-        }else{
-            $scope.entity.goodsDesc.specificationItems.push({"attributeName":text,"attributeValue":[optionName]});
+        } else {
+            $scope.entity.goodsDesc.specificationItems.push({"attributeName": text, "attributeValue": [optionName]});
         }
+    }
+
+    //组装sku列表数据
+    $scope.createItemList = function () {
+        $scope.entity.itemList = [{spec: {}, price: 0, num: 99999, status: "1", isDefault: "0"}];
+
+        var specList = $scope.entity.goodsDesc.specificationItems;
+        for (var i = 0; i < specList.length; i++) {
+            $scope.entity.itemList = addColumn($scope.entity.itemList, specList[i].attributeName, specList[i].attributeValue);
+        }
+        if(specList.length==0){
+            $scope.entity.itemList=[];
+        }
+    }
+    //构建sku列表行列数据
+    addColumn = function (list, specName, specValue) {
+        var newList=[];
+        for (var i = 0; i < list.length; i++) {
+            var olditem = list[i];
+            for (var j = 0; j < specValue.length; j++) {
+                var newitem= JSON.parse(JSON.stringify(olditem));
+                newitem.spec[specName] = specValue[j];
+                newList.push(newitem);
+            }
+        }
+        return newList;
     }
 });

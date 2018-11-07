@@ -199,4 +199,16 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
     }
 
     $scope.status=['未审核','已审核','审核通过','关闭'];
+    $scope.isMarketables=['下架','上架'];
+    $scope.updateIsMarketable=function (isMarketable) {
+        goodsService.updateIsMarketable($scope.selectIds,isMarketable).success(function (response) {
+            if(response.success){
+                $scope.reloadList();
+                $scope.selectIds = [];
+            }else{
+                alert(response.message)
+            }
+        })
+    }
+
 });

@@ -137,13 +137,13 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
                 $scope.image_entity.url = JSON.parse(response.message).url;
                 alert(JSON.parse(response.message).message);
             } else {
-                alert(response.message)
+                alert(response.message);
             }
         })
 
     }
 
-    $scope.entity = {goods: {}, goodsDesc: {itemImages: []}, itemList: []};
+    $scope.entity = {goods: {}, goodsDesc: {itemImages: [], specificationItems: []}, itemList: []};
     $scope.addImageEntity = function () {
         alert($scope.image_entity);
         $scope.entity.goodsDesc.itemImages.push($scope.image_entity);
@@ -154,6 +154,22 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
         alert(index);
         $scope.entity.goodsDesc.itemImages.splice(index, 1);
     }
-
-
+    //规格选项勾选和取消勾选组装规格结果集功能
+    $scope.updateSpecAttribute = function (optionName, $event, text) {
+        var specObject = $scope.getObjectByName($scope.entity.goodsDesc.specificationItems,"attributeName",text)
+        if (specObject!=null){
+            if($event.target.checked){
+                specObject.attributeValue.push(optionName);
+            }else{
+                var index = specObject.attributeValue.indexOf(optionName);
+                specObject.attributeValue.splice(index,1);
+                if(specObject.attributeValue.length==0){
+                    var index1 = $scope.entity.goodsDesc.specificationItems.indexOf(specObject);
+                    $scope.entity.goodsDesc.specificationItems.splice(index1,1);
+                }
+            }
+        }else{
+            $scope.entity.goodsDesc.specificationItems.push({"attributeName":text,"attributeValue":[optionName]});
+        }
+    }
 });

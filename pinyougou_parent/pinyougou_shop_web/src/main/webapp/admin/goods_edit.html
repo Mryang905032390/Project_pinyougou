@@ -192,17 +192,16 @@
 			                        </div>
                             	</div>
                             	<p>
-                            	
+                                    {{entity.goodsDesc.specificationItems}}
                             	<div>
                             	
 	                                <div class="row data-type">
-	                                
 		                                <div ng-repeat="spec in specList">
 			                                <div class="col-md-2 title">{{spec.text}}</div>
 					                        <div class="col-md-10 data">
 					                               
 					                            <span ng-repeat="option in spec.options">
-					                            	<input  type="checkbox" >{{option.optionName}}
+					                            	<input  type="checkbox" ng-click="updateSpecAttribute(option.optionName,$event,spec.text)">{{option.optionName}}
 					                            </span>
 					                        </div>
 		                                </div>

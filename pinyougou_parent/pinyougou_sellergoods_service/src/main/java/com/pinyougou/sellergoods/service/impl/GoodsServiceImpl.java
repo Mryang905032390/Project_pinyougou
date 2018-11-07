@@ -38,8 +38,6 @@ public class GoodsServiceImpl implements GoodsService {
 	private TbBrandMapper brandMapper;
 	@Autowired
 	private TbSellerMapper sellerMapper;
-	@Autowired
-	private TbItemMapper itemMapper;
 
 	
 	/**
@@ -98,8 +96,7 @@ public class GoodsServiceImpl implements GoodsService {
 			TbBrand tbBrand = brandMapper.selectByPrimaryKey(tbGoods.getBrandId());
 			item.setBrand(tbBrand.getName());
 			TbSeller seller = sellerMapper.selectByPrimaryKey(tbGoods.getSellerId());
-			item.setSeller(seller.getNickName());
-			itemMapper.insert(item);
+			item.setSeller(seller.getBankName());
 		}
 	}
 
@@ -142,13 +139,13 @@ public class GoodsServiceImpl implements GoodsService {
 		
 		if(goods!=null){			
 						if(goods.getSellerId()!=null && goods.getSellerId().length()>0){
-				criteria.andSellerIdLike("%"+goods.getSellerId()+"%");
+				criteria.andSellerIdEqualTo(goods.getSellerId());
 			}
 			if(goods.getGoodsName()!=null && goods.getGoodsName().length()>0){
 				criteria.andGoodsNameLike("%"+goods.getGoodsName()+"%");
 			}
 			if(goods.getAuditStatus()!=null && goods.getAuditStatus().length()>0){
-				criteria.andAuditStatusLike("%"+goods.getAuditStatus()+"%");
+				criteria.andAuditStatusEqualTo(goods.getAuditStatus());
 			}
 			if(goods.getIsMarketable()!=null && goods.getIsMarketable().length()>0){
 				criteria.andIsMarketableLike("%"+goods.getIsMarketable()+"%");
@@ -171,5 +168,14 @@ public class GoodsServiceImpl implements GoodsService {
 		Page<TbGoods> page= (Page<TbGoods>)goodsMapper.selectByExample(example);		
 		return new PageResult(page.getTotal(), page.getResult());
 	}
-	
+
+	@Override
+	public void updateStatus(Long[] ids,String status) {
+		for (Long id : ids) {
+			TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+			tbGoods.setAuditStatus(status);
+			goodsMapper.updateByPrimaryKey(tbGoods);
+		}
+	}
+
 }

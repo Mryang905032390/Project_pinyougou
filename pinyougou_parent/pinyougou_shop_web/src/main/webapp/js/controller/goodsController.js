@@ -197,4 +197,6 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
         }
         return newList;
     }
+
+    $scope.status=['未审核','已审核','审核通过','关闭'];
 });

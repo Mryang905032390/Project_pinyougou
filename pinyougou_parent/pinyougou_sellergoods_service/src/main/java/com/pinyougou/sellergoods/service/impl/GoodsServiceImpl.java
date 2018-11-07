@@ -1,16 +1,18 @@
 package com.pinyougou.sellergoods.service.impl;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.pinyougou.mapper.TbGoodsDescMapper;
-import com.pinyougou.pojo.TbGoodsDesc;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
 import groupEntity.Goods;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.pinyougou.mapper.TbGoodsMapper;
-import com.pinyougou.pojo.TbGoods;
-import com.pinyougou.pojo.TbGoodsExample;
 import com.pinyougou.pojo.TbGoodsExample.Criteria;
 import com.pinyougou.sellergoods.service.GoodsService;
 
@@ -30,6 +32,15 @@ public class GoodsServiceImpl implements GoodsService {
 	private TbGoodsMapper goodsMapper;
     @Autowired
     private TbGoodsDescMapper goodsDescMapper;
+    @Autowired
+	private TbItemCatMapper ItemCatMapper;
+	@Autowired
+	private TbBrandMapper brandMapper;
+	@Autowired
+	private TbSellerMapper sellerMapper;
+	@Autowired
+	private TbItemMapper itemMapper;
+
 	
 	/**
 	 * 查询全部
@@ -59,7 +70,38 @@ public class GoodsServiceImpl implements GoodsService {
         TbGoodsDesc goodsDesc = goods.getGoodsDesc();
         goodsDesc.setGoodsId(tbGoods.getId());
         goodsDescMapper.insert(goodsDesc);
-    }
+
+		List<TbItem> itemList = goods.getItemList();
+		for (TbItem item : itemList) {
+			String title = tbGoods.getGoodsName();
+			String spec = item.getSpec();
+			Map<String,String> map = JSON.parseObject(spec, Map.class);
+			Set<String> keys = map.keySet();
+			for (String key : keys) {
+				title+=" "+map.get(key);
+			}
+			item.setTitle(title);
+
+			String itemImages = goodsDesc.getItemImages();
+			List<Map> imageList = JSON.parseArray(itemImages, Map.class);
+			if(imageList.size()>0){
+				String image = (String)imageList.get(0).get("url");
+				item.setImage(image);
+			}
+			item.setCategoryid(tbGoods.getCategory3Id());
+			item.setCreateTime(new Date());
+			item.setUpdateTime(new Date());
+			item.setGoodsId(tbGoods.getId());
+			item.setSellerId(tbGoods.getSellerId());
+			TbItemCat tbItemCat = ItemCatMapper.selectByPrimaryKey(tbGoods.getCategory3Id());
+			item.setCategory(tbItemCat.getName());
+			TbBrand tbBrand = brandMapper.selectByPrimaryKey(tbGoods.getBrandId());
+			item.setBrand(tbBrand.getName());
+			TbSeller seller = sellerMapper.selectByPrimaryKey(tbGoods.getSellerId());
+			item.setSeller(seller.getNickName());
+			itemMapper.insert(item);
+		}
+	}
 
 	
 	/**

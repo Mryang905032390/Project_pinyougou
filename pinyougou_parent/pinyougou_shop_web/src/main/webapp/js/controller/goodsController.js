@@ -123,7 +123,12 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
         typeTemplateService.findOne(newValue).success(function (response) {
             $scope.brandList = JSON.parse(response.brandIds);
             $scope.entity.goodsDesc.customAttributeItems = JSON.parse(response.customAttributeItems);
+        });
+        //模板关联的规格列表数据;
+        typeTemplateService.findSpecList(newValue).success(function (response) {
+            $scope.specList = response;
         })
+
     })
     $scope.image_entity = {};
     $scope.uploadFile = function () {
@@ -149,4 +154,6 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
         alert(index);
         $scope.entity.goodsDesc.itemImages.splice(index, 1);
     }
+
+
 });

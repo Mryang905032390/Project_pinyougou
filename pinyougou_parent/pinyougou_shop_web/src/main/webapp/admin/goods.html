@@ -31,7 +31,7 @@
 
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController">
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController" ng-init="findAllItemCatList()">
   <!-- .box-body -->
                 
                     <div class="box-header with-border">
@@ -96,9 +96,9 @@
 				                          <td>{{pojo.id}}</td>
 									      <td>{{pojo.goodsName}}</td>
 									      <td>{{pojo.price}}</td>
-									      <td>{{pojo.category1Id}}</td>
-									      <td>{{pojo.category2Id}}</td>
-									      <td>{{pojo.category3Id}}</td>
+									      <td>{{itmeCatList[pojo.category1Id]}}</td>
+									      <td>{{itmeCatList[pojo.category2Id]}}</td>
+									      <td>{{itmeCatList[pojo.category3Id]}}</td>
 		                                  <td>
 		                                  	<span>
 		                                  		{{status[pojo.auditStatus]}}

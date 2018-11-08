@@ -1,5 +1,5 @@
 //控制层
-app.controller('goodsController', function ($scope, $controller, goodsService) {
+app.controller('goodsController', function ($scope, $controller, itemCatService, goodsService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -84,11 +84,20 @@ app.controller('goodsController', function ($scope, $controller, goodsService) {
 
                 if (response.success) {
                     $scope.reloadList();
-                    $scope.selectIds=[];//审核完成后，清空记录商品id数组
+                    $scope.selectIds = [];//审核完成后，清空记录商品id数组
                 } else {
                     alert(response.message);
                 }
             }
         );
+    }
+
+    $scope.itmeCatList = [];
+    $scope.findAllItemCatList = function () {
+        itemCatService.findAll().success(function (response) {
+            for (var i = 0; i < response.length; i++) {
+                $scope.itmeCatList[response[i].id] = response[i].name;
+            }
+        })
     }
 });	

@@ -143,7 +143,7 @@ app.controller('goodsController', function ($scope, $controller, goodsService, i
 
     }
 
-    $scope.entity = {goods: {}, goodsDesc: {itemImages: [], specificationItems: []}, itemList: []};
+    $scope.entity = {goods: {isEnableSpec:"1"}, goodsDesc: {itemImages: [], specificationItems: []}, itemList: []};
     $scope.addImageEntity = function () {
         $scope.entity.goodsDesc.itemImages.push($scope.image_entity);
     }

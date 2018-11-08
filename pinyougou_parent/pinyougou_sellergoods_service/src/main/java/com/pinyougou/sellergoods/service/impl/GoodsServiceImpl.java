@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.pinyougou.mapper.*;
 import com.pinyougou.pojo.*;
 import groupEntity.Goods;
@@ -34,11 +33,13 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private TbGoodsDescMapper goodsDescMapper;
     @Autowired
-    private TbItemCatMapper ItemCatMapper;
+    private TbItemCatMapper itemCatMapper;
     @Autowired
     private TbBrandMapper brandMapper;
     @Autowired
     private TbSellerMapper sellerMapper;
+    @Autowired
+    private TbItemMapper itemMapper;
 
 
     /**
@@ -64,44 +65,85 @@ public class GoodsServiceImpl implements GoodsService {
      */
     @Override
     public void add(Goods goods) {
+        //保存tb_goods表中的数据
         TbGoods tbGoods = goods.getGoods();
+        //新录入的商品，都是未审核状态
+        tbGoods.setAuditStatus("0");
         goodsMapper.insert(tbGoods);
+
+        //保存tb_goods_desc表中数据
         TbGoodsDesc goodsDesc = goods.getGoodsDesc();
         goodsDesc.setGoodsId(tbGoods.getId());
         goodsDescMapper.insert(goodsDesc);
 
-        List<TbItem> itemList = goods.getItemList();
-        for (TbItem item : itemList) {
-            String title = tbGoods.getGoodsName();
-            String spec = item.getSpec();
-            Map<String, String> map = JSON.parseObject(spec, Map.class);
-            Set<String> keys = map.keySet();
-            for (String key : keys) {
-                title += " " + map.get(key);
+        if("1".equals(tbGoods.getIsEnableSpec())){
+            //启用规格
+            //保持item列表数据
+            List<TbItem> itemList = goods.getItemList();
+            for (TbItem item : itemList) {
+//			`title` varchar(100) NOT NULL COMMENT '商品标题',   //组装原则：spu名称+规格选择值 中间以逗号隔开
+                String title = tbGoods.getGoodsName();
+                //获取规格选项值
+                //{"机身内存":"16G","网络":"联通3G"}
+                String spec = item.getSpec();
+                Map<String,String> specMap = JSON.parseObject(spec, Map.class);
+                for(String key:specMap.keySet()){
+                    title+=" "+specMap.get(key);
+                }
+                item.setTitle(title);
+                setItemValue(tbGoods, goodsDesc, item);
+                //保存商品
+                itemMapper.insert(item);
             }
-            item.setTitle(title);
+        }else {
+            //未启用规格
+            TbItem item = new TbItem();
 
-            String itemImages = goodsDesc.getItemImages();
-            List<Map> imageList = JSON.parseArray(itemImages, Map.class);
-            if (imageList.size() > 0) {
-                String image = (String) imageList.get(0).get("url");
-                item.setImage(image);
-            }
-            item.setCategoryid(tbGoods.getCategory3Id());
-            item.setCreateTime(new Date());
-            item.setUpdateTime(new Date());
-            item.setGoodsId(tbGoods.getId());
-            item.setSellerId(tbGoods.getSellerId());
-            TbItemCat tbItemCat = ItemCatMapper.selectByPrimaryKey(tbGoods.getCategory3Id());
-            item.setCategory(tbItemCat.getName());
-            TbBrand tbBrand = brandMapper.selectByPrimaryKey(tbGoods.getBrandId());
-            item.setBrand(tbBrand.getName());
-            TbSeller seller = sellerMapper.selectByPrimaryKey(tbGoods.getSellerId());
-            item.setSeller(seller.getBankName());
+            String title = tbGoods.getGoodsName();
+            item.setTitle(title);
+            setItemValue(tbGoods, goodsDesc, item);
+            //组装未启用规格时，页面无法传达数据
+            //spec
+            item.setSpec("{}");
+            //price
+            item.setPrice(tbGoods.getPrice());
+            //num
+            item.setNum(99999);
+            item.setStatus("1");//是否有效商品
+            item.setIsDefault("1");//是否默认商品
+            //保存商品
+            itemMapper.insert(item);
         }
+
+
+
     }
 
+    private void setItemValue(TbGoods tbGoods, TbGoodsDesc goodsDesc, TbItem item) {
+        String itemImages = goodsDesc.getItemImages();
+        List<Map> imageList = JSON.parseArray(itemImages, Map.class);
 
+        if(imageList.size()>0){
+            String image= (String) imageList.get(0).get("url");
+            item.setImage(image);
+        }
+        item.setCategoryid(tbGoods.getCategory3Id());
+
+        item.setCreateTime(new Date());
+
+        item.setUpdateTime(new Date());
+
+        item.setGoodsId(tbGoods.getId());
+        item.setSellerId(tbGoods.getSellerId());
+        TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(tbGoods.getCategory3Id());
+        item.setCategory(itemCat.getName());
+
+        TbBrand tbBrand = brandMapper.selectByPrimaryKey(tbGoods.getBrandId());
+        item.setBrand(tbBrand.getName());
+
+        TbSeller tbSeller = sellerMapper.selectByPrimaryKey(tbGoods.getSellerId());
+        item.setSeller(tbSeller.getNickName());
+    }
     /**
      * 修改
      */
@@ -191,7 +233,7 @@ public class GoodsServiceImpl implements GoodsService {
             if ("1".equals(tbGoods.getAuditStatus())) {
                 tbGoods.setIsMarketable(isMarketable);
                 goodsMapper.updateByPrimaryKey(tbGoods);
-            }else{
+            } else {
                 throw new RuntimeException("只有通过审核的商品才可以上架");
             }
         }

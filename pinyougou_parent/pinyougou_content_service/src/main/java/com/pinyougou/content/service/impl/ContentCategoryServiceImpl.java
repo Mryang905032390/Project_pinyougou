@@ -55,7 +55,7 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 	 * 修改
 	 */
 	@Override
-	public void update(TbContentCategory contentCategory){
+	public void update(TbContentCategory contentCategory)	{
 		contentCategoryMapper.updateByPrimaryKey(contentCategory);
 	}	
 	

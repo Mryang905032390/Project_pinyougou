@@ -12,6 +12,7 @@ import com.pinyougou.pojo.TbContentExample;
 import com.pinyougou.pojo.TbContentExample.Criteria;
 
 import entity.PageResult;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 服务实现层
@@ -47,7 +48,8 @@ public class ContentServiceImpl implements ContentService {
 	 */
 	@Override
 	public void add(TbContent content) {
-		contentMapper.insert(content);		
+		contentMapper.insert(content);
+		redisTemplate.boundHashOps("content").delete(content.getCategoryId());
 	}
 
 	
@@ -56,7 +58,12 @@ public class ContentServiceImpl implements ContentService {
 	 */
 	@Override
 	public void update(TbContent content){
+		TbContent tbContent = contentMapper.selectByPrimaryKey(content.getCategoryId());
+		redisTemplate.boundHashOps("content").delete(tbContent.getCategoryId());
 		contentMapper.updateByPrimaryKey(content);
+		if (content.getCategoryId().longValue()!=tbContent.getCategoryId().longValue()){
+			redisTemplate.boundHashOps("content").delete(content.getCategoryId());
+		}
 	}	
 	
 	/**
@@ -75,8 +82,11 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	public void delete(Long[] ids) {
 		for(Long id:ids){
+			TbContent tbContent = contentMapper.selectByPrimaryKey(id);
 			contentMapper.deleteByPrimaryKey(id);
-		}		
+			redisTemplate.boundHashOps("content").delete(tbContent.getCategoryId());
+		}
+
 	}
 	
 	
@@ -107,13 +117,25 @@ public class ContentServiceImpl implements ContentService {
 		return new PageResult(page.getTotal(), page.getResult());
 	}
 
+	@Autowired
+	private RedisTemplate redisTemplate;
+
 	@Override
 	public List<TbContent> findByCategoryId(Long categoryId) {
-		TbContentExample example = new TbContentExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andStatusEqualTo("1");//有效状态的广告
-		criteria.andCategoryIdEqualTo(categoryId);
-		return contentMapper.selectByExample(example);
-	}
 
+		List<TbContent> contentList = (List<TbContent>)redisTemplate.boundHashOps("content").get(categoryId);
+		if (contentList==null) {
+			System.out.println("from mysql......");
+			TbContentExample example = new TbContentExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andStatusEqualTo("1");//有效状态的广告
+			criteria.andCategoryIdEqualTo(categoryId);
+			List<TbContent> tbContents = contentMapper.selectByExample(example);
+			redisTemplate.boundHashOps("content").put(categoryId,tbContents);
+			return tbContents;
+		}else{
+			System.out.println("from redis......");
+	}
+		return contentList;
+	}
 }

@@ -1,6 +1,7 @@
 package com.pinyougou.demo;
 
 import com.pinyougou.pojo.TbItem;
+import com.pinyougou.solr.util.SolrUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-solr.xml")
+@ContextConfiguration(locations = "classpath*:spring/applicationContext*.xml")
 public class SolrTest {
     @Autowired
     private SolrTemplate solrTemplate;
@@ -79,7 +80,6 @@ public class SolrTest {
 
     @Test
     public void multiQuery() {
-
         Query query = new SimpleQuery();
         Criteria criteria = new Criteria("item_title").contains("9").and("item_seller").contains("5");
         query.addCriteria(criteria);
@@ -87,5 +87,12 @@ public class SolrTest {
         for (TbItem item : tbItems) {
             System.out.println(item.getId() + "  " + item.getBrand() + "  " + item.getTitle() + "  " + item.getSeller());
         }
+    }
+
+    @Autowired
+    private SolrUtil solrUtil;
+    @Test
+    public void testDateImport(){
+        solrUtil.dataImport();
     }
 }

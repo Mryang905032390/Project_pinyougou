@@ -13,7 +13,6 @@
 	href="css/widget-cartPanelView.css" />
 <script src="plugins/angularjs/angular.min.js"></script>
 <script src="js/base.js"></script>
-<script src="js/htmlFilter.js"></script>
 <script src="js/service/searchService.js"></script>
 <script src="js/controller/baseController.js"></script>
 <script src="js/controller/searchController.js"></script>
@@ -284,7 +283,7 @@
 								</div>
 								<div class="attr">
 									 <!-- {{entity.title}}-->
-									 <em ng-bind-html=	"entity.title | trustHtml"></em>
+									 <em ng-bind-html="entity.title | trustHtml"></em>
 								</div>
 								<div class="cu">
 									<em><span>促</span>满一件可参加超值换购</em>
@@ -314,7 +313,7 @@
 					<div>
 						<span>共{{resultMap.totalPages}}&nbsp;</span><span> 到第 <input type="text"
 							class="page-num" ng-model="searchMap.pageNo"> 页
-							<button class="page-confirm" ng-click="queryForPage(searchMap.pageNo);">确定</button></span>
+							<button class="page-confirm" ng-click="queryForPage(searchMap.pageNo*1);">确定</button></span>
 					</div>
 				</div>
 			</div>

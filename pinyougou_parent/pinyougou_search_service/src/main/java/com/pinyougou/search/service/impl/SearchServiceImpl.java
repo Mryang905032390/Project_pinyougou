@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.search.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.HighlightEntry;
@@ -73,6 +74,24 @@ public class SearchServiceImpl implements SearchService {
                 query.addFilterQuery(filterQuery);
             }
         }
+
+        //商品排序操作
+        String sortField = (String) searchMap.get("sortField");
+        String sort = (String) searchMap.get("sort");
+        if (sortField != null && !"".equals(sortField)) {
+          //设置排序条件
+            if ("ASC".equals(sort)){
+                query.addSort(new Sort(Sort.Direction.ASC,"item_"+sortField));
+            }else{
+                query.addSort(new Sort(Sort.Direction.DESC,"item_"+sortField));
+            }
+        }
+
+        //分页条件查询
+        Integer pageNo = (Integer) searchMap.get("pageNo");
+        Integer pageSize = (Integer) searchMap.get("pageSize");
+        query.setOffset((pageNo-1)*pageSize);
+        query.setRows(pageSize);
         query.addCriteria(criteria);
 
         HighlightOptions highlightOptions = new HighlightOptions();
@@ -97,6 +116,8 @@ public class SearchServiceImpl implements SearchService {
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", content);
+        resultMap.put("pageNo", pageNo);
+        resultMap.put("totalPages",page.getTotalPages());
         return resultMap;
     }
 }

@@ -27,29 +27,34 @@ public class ItemPageController {
     @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
+    /**
+     * 基于商品id查询商品数据生成静态页
+     *
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("/genHtml")
     public String genHtml(Long goodsId) {
+
         try {
             Configuration configuration = freeMarkerConfigurer.getConfiguration();
-
             Template template = configuration.getTemplate("item.ftl");
-
             Goods goods = itemPageService.findOne(goodsId);
             List<TbItem> itemList = goods.getItemList();
 
             for (TbItem item : itemList) {
-                Map<String,Object> map = new HashMap<>();
-                map.put("item",item);
-                map.put("goods",goods);
-                Writer out = new FileWriter("G:/freeMarkerTest/pinyougou/"+item.getId()+".html");
+                Map<String, Object> map = new HashMap<>();
+                map.put("item", item);
+                map.put("goods", goods);
+                Writer out = new FileWriter("G:/freeMarkerTest/pinyougou/" + item.getId() + ".html");
                 template.process(map, out);
                 out.close();
             }
-            return "success...";
-
+            return "success ....";
         } catch (Exception e) {
             e.printStackTrace();
-            return "fail...";
+            return "fail ....";
         }
+
     }
 }

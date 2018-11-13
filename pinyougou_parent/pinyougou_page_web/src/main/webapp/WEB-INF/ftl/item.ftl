@@ -12,9 +12,25 @@
     <link rel="stylesheet" type="text/css" href="css/pages-item.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-zoom.css" />
     <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css" />
+
+    <script type="text/javascript" src="plugins/angularjs/angular.min.js">  </script>
+    <script type="text/javascript" src="js/base.js">  </script>
+    <script type="text/javascript" src="js/controller/baseController.js">  </script>
+    <script type="text/javascript" src="js/controller/itemPageController.js">  </script>
+
+	<script>
+		var spec=${item.spec};
+		var specList=[
+		    <#list goods.itemList as item>
+				{id:${item.id?c},spec:${item.spec}},
+		    </#list>
+		];
+
+	</script>
+
 </head>
 
-<body>
+<body ng-app="pinyougou" ng-controller="itemPageController">
 	<!-- 头部栏位 -->
 	<!--页面顶部-->
 <div id="nav-bottom">
@@ -27,41 +43,39 @@
 			<div class="crumb-wrap">
 				<ul class="sui-breadcrumb">
 					<li>
-						<a href="#">手机、数码、通讯</a>
+						<a href="#">${goods.categoryMap.category1Name}</a>
 					</li>
 					<li>
-						<a href="#">手机</a>
+						<a href="#">${goods.categoryMap.category2Name}</a>
 					</li>
 					<li>
-						<a href="#">Apple苹果</a>
+						<a href="#">${goods.categoryMap.category3Name}</a>
 					</li>
-					<li class="active">iphone 6S系类</li>
+					<li class="active">${goods.goods.goodsName}</li>
 				</ul>
 			</div>
 			<!--product-info-->
 			<div class="product-info">
 				<div class="fl preview-wrap">
+					<#assign imageList=goods.goodsDesc.itemImages?eval />
+
 					<!--放大镜效果-->
 					<div class="zoom">
+						<#if (imageList?size>0)>
 						<!--默认第一个预览-->
-						<div id="preview" class="spec-preview">
-							<span class="jqzoom"><img jqimg="img/_/b1.png" src="img/_/s1.png" /></span>
-						</div>
-						<!--下方的缩略图-->
+							<div id="preview" class="spec-preview">
+								<span class="jqzoom"><img jqimg="${imageList[0].url}" src="${imageList[0].url}" width="400px" height="200px"/></span>
+							</div>
+						</#if>
+							<!--下方的缩略图-->
 						<div class="spec-scroll">
 							<a class="prev">&lt;</a>
 							<!--左右按钮-->
 							<div class="items">
 								<ul>
-									<li><img src="img/_/s1.png" bimg="img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s2.png" bimg="img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s3.png" bimg="img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s1.png" bimg="img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s2.png" bimg="img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s3.png" bimg="img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s1.png" bimg="img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s2.png" bimg="img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="img/_/s3.png" bimg="img/_/b3.png" onmousemove="preview(this)" /></li>
+									<#list imageList as image>
+									<li><img src="${image.url}" bimg="${image.url}" onmousemove="preview(this)" /></li>
+									</#list>
 								</ul>
 							</div>
 							<a class="next">&gt;</a>
@@ -70,7 +84,7 @@
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>${item.title!""}</h4>
+						<h4>${item.title}</h4>
 					</div>
 					<div class="news"><span>${item.sellPoint!goods.goods.caption}</span></div>
 					<div class="summary">
@@ -79,8 +93,8 @@
 								<i>价　　格</i>
 							</div>
 							<div class="fl price">
-								<i>¥${item.price!""}</i>
-								<em></em>
+								<i>¥</i>
+								<em>${item.price}</em>
 								<span>降价通知</span>
 							</div>
 							<div class="fr remark">
@@ -118,79 +132,28 @@
 					</div>
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix">
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>选择颜色</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">金色<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">银色</a></dd>
-								<dd><a href="javascript:;">黑色</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>内存容量</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">16G<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">64G</a></dd>
-								<dd><a href="javascript:;" class="locked">128G</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>选择版本</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">公开版<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">移动版</a></dd>							
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>购买方式</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">官方标配<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">移动优惠版</a></dd>	
-								<dd><a href="javascript:;"  class="locked">电信优惠版</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>套　　装</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">保护套装<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;"  class="locked">充电套装</a></dd>	
-								
-							</dl>
-							
-							
+							<#assign specList=goods.goodsDesc.specificationItems?eval />
+							<#list specList as spec>
+								<dl>
+									<dt>
+										<div class="fl title">
+										<i>${spec.attributeName}</i>
+									</div>
+									</dt>
+									<#--class="selected"-->
+								<#list spec.attributeValue as value>
+									<dd><a href="javascript:;" ng-click="updateSpecAttribute('${spec.attributeName}','${value}')" class="{{isSelected('${spec.attributeName}','${value}')?'selected':''}}" >${value}<span title="点击取消选择">&nbsp;</span></a></dd>
+								</#list>
+								</dl>
+							</#list>
 						</div>
-						
-						
-						
-						
-						
-						
-						
-						
-						
 						<div class="summary-wrap">
 							<div class="fl title">
 								<div class="control-group">
 									<div class="controls">
-										<input autocomplete="off" type="text" value="1" minnum="1" class="itxt" />
-										<a href="javascript:void(0)" class="increment plus">+</a>
-										<a href="javascript:void(0)" class="increment mins">-</a>
+										<input autocomplete="off" type="text" value="{{num}}" minnum="1" class="itxt" />
+										<a href="javascript:void(0)" ng-click="addNum(num+1)" class="increment plus">+</a>
+										<a href="javascript:void(0)" ng-click="addNum(num-1)" class="increment mins">-</a>
 									</div>
 								</div>
 							</div>

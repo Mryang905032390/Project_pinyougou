@@ -6,11 +6,24 @@ import com.pinyougou.pojo.TbItem;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class Goods implements Serializable {
     private TbGoods goods;
+
     private TbGoodsDesc goodsDesc;
+
     private List<TbItem> itemList;
+
+    private Map<String,String> categoryMap;
+
+    public Map<String, String> getCategoryMap() {
+        return categoryMap;
+    }
+
+    public void setCategoryMap(Map<String, String> categoryMap) {
+        this.categoryMap = categoryMap;
+    }
 
     public TbGoods getGoods() {
         return goods;

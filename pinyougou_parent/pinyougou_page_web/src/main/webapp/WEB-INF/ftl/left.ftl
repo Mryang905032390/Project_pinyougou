@@ -209,7 +209,7 @@
 						<div class="clearfix"></div>
 						<div class="tab-content tab-wraped">
 							<div id="one" class="tab-pane active">
-								${goods.goodsDesc.introducation!""}
+								${goods.goodsDesc.introduction!""}
 							</div>
 							<div id="two" class="tab-pane">
 								<p>${goods.goodsDesc.packageList!""}</p>

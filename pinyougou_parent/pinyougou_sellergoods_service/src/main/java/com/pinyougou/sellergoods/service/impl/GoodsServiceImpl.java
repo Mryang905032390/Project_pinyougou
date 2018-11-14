@@ -17,7 +17,14 @@ import com.pinyougou.pojo.TbGoodsExample.Criteria;
 import com.pinyougou.sellergoods.service.GoodsService;
 
 import entity.PageResult;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 
 /**
  * 服务实现层
@@ -226,11 +233,67 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @Autowired
+    private Destination addItemSolrDestination;
+
+    @Autowired
+    private Destination deleItemSolrDestination;
+
+    @Autowired
+    private Destination addItemPageDestination;
+
+    @Autowired
+    private Destination deleItemPageDestination;
+
     @Override
     public void updateIsMarketable(Long[] ids, String isMarketable) {
         for (Long id : ids) {
             TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
             if ("1".equals(tbGoods.getAuditStatus())) {
+
+                //上架
+                if("1".equals(isMarketable)){
+                    jmsTemplate.send(addItemSolrDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            return session.createTextMessage(id+"");
+                        }
+                    });
+                }
+
+                //下架
+                if("0".equals(isMarketable)){
+                    jmsTemplate.send(deleItemSolrDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            return session.createTextMessage(id+"");
+                        }
+                    });
+                }
+
+                //上架
+                if("1".equals(isMarketable)){
+                    jmsTemplate.send(addItemPageDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            return session.createTextMessage(id+"");
+                        }
+                    });
+                }
+
+                //下架
+                if("0".equals(isMarketable)){
+                    jmsTemplate.send(deleItemPageDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            return session.createTextMessage(id+"");
+                        }
+                    });
+                }
+
                 tbGoods.setIsMarketable(isMarketable);
                 goodsMapper.updateByPrimaryKey(tbGoods);
             } else {

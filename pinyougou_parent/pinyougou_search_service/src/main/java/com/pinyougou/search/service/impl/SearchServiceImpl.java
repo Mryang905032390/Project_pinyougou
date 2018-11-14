@@ -13,7 +13,6 @@ import org.springframework.data.solr.core.query.result.HighlightPage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 public class SearchServiceImpl implements SearchService {

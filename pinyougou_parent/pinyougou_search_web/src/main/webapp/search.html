@@ -13,6 +13,7 @@
 	href="css/widget-cartPanelView.css" />
 <script src="plugins/angularjs/angular.min.js"></script>
 <script src="js/base.js"></script>
+<script src="js/htmlFilter.js"></script>
 <script src="js/service/searchService.js"></script>
 <script src="js/controller/baseController.js"></script>
 <script src="js/controller/searchController.js"></script>
@@ -144,19 +145,19 @@
 					<li><a href="#">全部结果</a></li>
 				</ul>
 				<ul class="tags-choose">
-					<li class="tag" ng-if="searchMap.category!=''"
-						ng-click="removeSearchItem('category')">商品分类：{{searchMap.category}}<i
+				<li class="tag" ng-if="searchMap.category!=''"
+					ng-click="removeSearchItem('category')">商品分类：{{searchMap.category}}<i
 						class="sui-icon icon-tb-close"></i></li>
-					<li class="tag" ng-if="searchMap.brand!=''"
-						ng-click="removeSearchItem('brand')">品牌：{{searchMap.brand}}<i
+				<li class="tag" ng-if="searchMap.brand!=''"
+					ng-click="removeSearchItem('brand')">品牌：{{searchMap.brand}}<i
 						class="sui-icon icon-tb-close"></i></li>
-					<li class="tag" ng-if="searchMap.price!=''"
-						ng-click="removeSearchItem('price')">价格：{{searchMap.price}}<i
+				<li class="tag" ng-if="searchMap.price!=''"
+					ng-click="removeSearchItem('price')">价格：{{searchMap.price}}<i
 						class="sui-icon icon-tb-close"></i></li>
-					<li class="tag" ng-repeat="(key,value) in searchMap.spec"
-						ng-click="removeSearchItem(key)">{{key}}:{{value}}<i
+				<li class="tag" ng-repeat="(key,value) in searchMap.spec"
+					ng-click="removeSearchItem(key)">{{key}}:{{value}}<i
 						class="sui-icon icon-tb-close"></i></li>
-				</ul>
+			</ul>
 				<form class="fl sui-form form-dark">
 					<div class="input-control control-right">
 						<input type="text" /> <i class="sui-icon icon-touch-magnifier"></i>
@@ -282,8 +283,8 @@
 									</strong>
 								</div>
 								<div class="attr">
-									 <!-- {{entity.title}}-->
-									 <em ng-bind-html="entity.title | trustHtml"></em>
+									<!-- {{entity.title}} -->
+                                    <em ng-bind-html="entity.title | trustHtml"></em>
 								</div>
 								<div class="cu">
 									<em><span>促</span>满一件可参加超值换购</em>
@@ -313,7 +314,7 @@
 					<div>
 						<span>共{{resultMap.totalPages}}&nbsp;</span><span> 到第 <input type="text"
 							class="page-num" ng-model="searchMap.pageNo"> 页
-							<button class="page-confirm" ng-click="queryForPage(searchMap.pageNo*1);">确定</button></span>
+							<button class="page-confirm" ng-click="queryForPage(searchMap.pageNo);">确定</button></span>
 					</div>
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 //控制层
-app.controller('searchController', function ($scope, $controller, searchService) {
+app.controller('searchController', function ($scope, $controller,$location,searchService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -14,6 +14,13 @@ app.controller('searchController', function ($scope, $controller, searchService)
         pageNo:1,
         pageSize:60
     };
+    var keywords = $location.search()["keywords"];
+    if(keywords!="undefined"){
+        $scope.searchMap.keywords=keywords;
+    }else{
+        $scope.searchMap.keywords="手机";
+    }
+
     $scope.search = function () {
         searchService.search($scope.searchMap).success(function (response) {
             $scope.resultMap = response;

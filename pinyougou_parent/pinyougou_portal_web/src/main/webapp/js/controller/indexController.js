@@ -8,4 +8,8 @@ app.controller('indexController', function ($scope, $controller, contentService)
             $scope.contentList=response;
         })
     }
+    //关键字搜索
+    $scope.search=function () {
+        location.href="http://search.pinyougou.com/search.html#?keywords="+$scope.keywords;
+    }
 });	

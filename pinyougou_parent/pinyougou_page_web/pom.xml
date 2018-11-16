@@ -90,12 +90,6 @@
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.1.1</version>
-        </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -112,6 +106,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

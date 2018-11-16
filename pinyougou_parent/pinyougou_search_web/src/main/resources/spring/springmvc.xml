@@ -10,7 +10,9 @@
     <context:property-placeholder location="classpath:config/application.properties" />
 	
 	<mvc:annotation-driven>
+
 	  <mvc:message-converters register-defaults="true">
+
 	    <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">  
 	      <property name="supportedMediaTypes" value="application/json"/>
 	      <property name="features">
@@ -20,7 +22,9 @@
 	        </array>
 	      </property>
 	    </bean>
-	  </mvc:message-converters>  
+
+	  </mvc:message-converters>
+
 	</mvc:annotation-driven>
 
 	<!-- 引用dubbo 服务 -->

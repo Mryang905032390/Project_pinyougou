@@ -115,6 +115,7 @@ app.controller('userController', function ($scope, $controller, userService) {
     });
 
     $scope.isSubmitted=true;
+    $scope.smsCode="";
     $scope.codeVal=function(){
         return $scope.smsCode;
     };

@@ -6,6 +6,7 @@ import entity.Result;
 import groupEntity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import util.CookieUtil;
@@ -61,6 +62,7 @@ public class CartController {
     }
 
     @RequestMapping("/addItemToCartList")
+    @CrossOrigin(origins = "http://item.pinyougou.com",allowCredentials = "true")
     public Result addItemToCartList(Long itemId, Integer num) {
         try {
             String userName= SecurityContextHolder.getContext().getAuthentication().getName();

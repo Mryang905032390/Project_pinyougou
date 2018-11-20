@@ -6,6 +6,15 @@ app.controller('orderController', function ($scope, $controller, addressService)
     $scope.findAddressByUserId=function () {
         addressService.findAddressByUserId().success(function (response) {
             $scope.addressList=response;
+            for(var i = 0; i< $scope.addressList.length;i++){
+                if ($scope.addressList[i].isDefault=='1'){
+                    $scope.address=$scope.addressList[i];
+                    break;
+                }
+            }
+            if($scope.address==null){
+                $scope.address=$scope.addressList[0];
+            }
         })
     }
 
@@ -29,6 +38,16 @@ app.controller('orderController', function ($scope, $controller, addressService)
                 $scope.totalNum+=orderItemList[j].num;
                 $scope.totalMoney+=orderItemList[j].totalFee;
             }
+        }
+    }
+
+    $scope.address=null;
+    $scope.isSelect=function(addr){
+        if($scope.address==addr){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 });

@@ -1,5 +1,5 @@
 //控制层
-app.controller('orderController', function ($scope, $controller, addressService) {
+app.controller('orderController', function ($scope, $controller, addressService,cartService,orderService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -49,5 +49,27 @@ app.controller('orderController', function ($scope, $controller, addressService)
         else{
             return false;
         }
+    }
+
+    $scope.updateAddress=function (addr) {
+        $scope.address=addr;
+    }
+
+    $scope.entity={paymentType:'1'}
+    $scope.updatePaymentType=function(type){
+        $scope.entity.paymentType=type;
+    }
+
+    $scope.save=function () {
+        $scope.entity.receiver=$scope.address.contact;//收件人姓名
+        $scope.entity.receiveverMobile=$scope.address.mobile;//收件人电话
+        $scope.entity.receiverAreaName=$scope.address.address;//收件人详细地址
+        orderService.add($scope.entity).success(function (response) {
+            if (response.success){
+                location.href="pay.html";
+            }else{
+                alert(response.message);
+            }
+        })
     }
 });

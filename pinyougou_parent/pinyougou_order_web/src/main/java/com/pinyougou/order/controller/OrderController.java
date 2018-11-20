@@ -1,14 +1,13 @@
 package com.pinyougou.order.controller;
 import java.util.List;
 
-import com.pinyougou.order.service.AddressService;
+import com.pinyougou.order.service.OrderService;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbAddress;
+import com.pinyougou.pojo.TbOrder;
 
 import entity.PageResult;
 import entity.Result;
@@ -18,19 +17,19 @@ import entity.Result;
  *
  */
 @RestController
-@RequestMapping("/address")
-public class AddressController {
+@RequestMapping("/order")
+public class OrderController {
 
 	@Reference
-	private AddressService addressService;
+	private OrderService orderService;
 	
 	/**
 	 * 返回全部列表
 	 * @return
 	 */
 	@RequestMapping("/findAll")
-	public List<TbAddress> findAll(){			
-		return addressService.findAll();
+	public List<TbOrder> findAll(){			
+		return orderService.findAll();
 	}
 	
 	
@@ -40,18 +39,20 @@ public class AddressController {
 	 */
 	@RequestMapping("/findPage")
 	public PageResult  findPage(int page,int rows){			
-		return addressService.findPage(page, rows);
+		return orderService.findPage(page, rows);
 	}
 	
 	/**
 	 * 增加
-	 * @param address
+	 * @param order
 	 * @return
 	 */
 	@RequestMapping("/add")
-	public Result add(@RequestBody TbAddress address){
+	public Result add(@RequestBody TbOrder order){
 		try {
-			addressService.add(address);
+			String name = SecurityContextHolder.getContext().getAuthentication().getName();
+			order.setUserId(name);
+			orderService.add(order);
 			return new Result(true, "增加成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,13 +62,13 @@ public class AddressController {
 	
 	/**
 	 * 修改
-	 * @param address
+	 * @param order
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbAddress address){
+	public Result update(@RequestBody TbOrder order){
 		try {
-			addressService.update(address);
+			orderService.update(order);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,8 +82,8 @@ public class AddressController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbAddress findOne(Long id){
-		return addressService.findOne(id);		
+	public TbOrder findOne(Long id){
+		return orderService.findOne(id);		
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class AddressController {
 	@RequestMapping("/delete")
 	public Result delete(Long [] ids){
 		try {
-			addressService.delete(ids);
+			orderService.delete(ids);
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,21 +104,14 @@ public class AddressController {
 	
 		/**
 	 * 查询+分页
+	 * @param brand
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
 	@RequestMapping("/search")
-	public PageResult search(@RequestBody TbAddress address, int page, int rows  ){
-		return addressService.findPage(address, page, rows);		
+	public PageResult search(@RequestBody TbOrder order, int page, int rows  ){
+		return orderService.findPage(order, page, rows);		
 	}
-
-
-	@RequestMapping("/findAddressByUserId")
-	public List<TbAddress> findAddressByUserId(){
-		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-		return addressService.findAddressByUserId(userId);
-	}
-
-
+	
 }

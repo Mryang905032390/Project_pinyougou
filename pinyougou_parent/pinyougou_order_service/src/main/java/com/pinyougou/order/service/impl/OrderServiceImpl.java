@@ -1,11 +1,14 @@
 package com.pinyougou.order.service.impl;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.pinyougou.mapper.TbOrderItemMapper;
+import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.TbOrderItem;
+import com.pinyougou.pojo.TbPayLog;
 import groupEntity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -30,6 +33,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private TbOrderMapper orderMapper;
+
+	@Autowired
+	private TbPayLogMapper payLogMapper;
 	
 	/**
 	 * 查询全部
@@ -62,9 +68,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void add(TbOrder order) {
 		List<Cart> cartList = (List<Cart>)redisTemplate.boundValueOps(order.getUserId()).get();
+		double totalPayment = 0.00;
+		List<String> ids = new ArrayList<>();
 		for (Cart cart : cartList) {
 			TbOrder tbOrder = new TbOrder();
 			long orderId = idWorker.nextId();
+			ids.add(orderId+"");
 			tbOrder.setOrderId(orderId);
 			tbOrder.setStatus("1");
 			tbOrder.setCreateTime(new Date());
@@ -84,8 +93,21 @@ public class OrderServiceImpl implements OrderService {
 				payment+=orderItem.getTotalFee().doubleValue();
 				orderItemMapper.insert(orderItem);
 			}
+			totalPayment+=payment;
 			tbOrder.setPayment(new BigDecimal(payment));
 			orderMapper.insert(tbOrder);
+		}
+		if("1".equals(order.getPaymentType())){
+			TbPayLog payLog = new TbPayLog();
+			payLog.setOutTradeNo(idWorker.nextId()+"");
+			payLog.setCreateTime(new Date());
+			payLog.setTotalFee((long)(totalPayment*100));
+			payLog.setUserId(order.getUserId());
+			payLog.setTradeState("1");
+			payLog.setOrderList(ids.toString().replace("[","").replace("]","").replace(" ",""));
+			payLog.setPayType("1");
+			payLogMapper.insert(payLog);
+			redisTemplate.boundHashOps("payLog").put(order.getUserId(),payLog);
 		}
 		redisTemplate.delete(order.getUserId());
 	}

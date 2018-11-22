@@ -2,13 +2,22 @@ package com.pinyougou.pay.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.wxpay.sdk.WXPayUtil;
+import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.pay.service.PayService;
+import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojo.TbPayLog;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import util.HttpClient;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 @Service
+@Transactional
 public class PayServiceImpl implements PayService {
 
     @Value("${appid}")
@@ -64,5 +73,36 @@ public class PayServiceImpl implements PayService {
         String resultXml = httpClient.getContent();
         Map<String, String> resultMap = WXPayUtil.xmlToMap(resultXml);
         return resultMap;
+    }
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Override
+    public TbPayLog findPayLogByUserId(String userId) {
+        TbPayLog payLog = (TbPayLog) redisTemplate.boundHashOps("payLog").get(userId);
+        return payLog;
+    }
+
+    @Autowired
+    private TbPayLogMapper payLogMapper;
+    @Autowired
+    private TbOrderMapper orderMapper;
+    @Override
+    public void updateStatus(String out_trade_no, String transaction_id) {
+        TbPayLog tbPayLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+        tbPayLog.setTradeState("2");
+        tbPayLog.setPayTime(new Date());
+        tbPayLog.setTransactionId(transaction_id);
+        payLogMapper.updateByPrimaryKey(tbPayLog);
+
+        String orderList = tbPayLog.getTransactionId();
+        String[] ids = orderList.split(",");
+        for (String id : ids) {
+            TbOrder tbOrder = orderMapper.selectByPrimaryKey(Long.parseLong(id));
+            tbOrder.setPaymentTime(new Date());
+            tbOrder.setStatus("2");
+            orderMapper.updateByPrimaryKey(tbOrder);
+        }
+        redisTemplate.boundHashOps("payLog").delete(tbPayLog.getUserId());
     }
 }

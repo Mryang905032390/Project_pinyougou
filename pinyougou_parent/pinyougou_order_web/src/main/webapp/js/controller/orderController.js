@@ -66,7 +66,7 @@ app.controller('orderController', function ($scope, $controller, addressService,
         $scope.entity.receiverAreaName=$scope.address.address;//收件人详细地址
         orderService.add($scope.entity).success(function (response) {
             if (response.success){
-                location.href="pay.html";
+                location.href="http://localhost:8093/pay.html";
             }else{
                 alert(response.message);
             }

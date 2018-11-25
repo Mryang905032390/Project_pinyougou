@@ -141,7 +141,6 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
 
 	@Override
 	public void saveSeckillOrder(Long seckillGoodsId, String userId) {
-
 		//进入秒杀下单的方法，排队人多+1
 		redisTemplate.boundValueOps("seckill_user_queue"+seckillGoodsId).increment(1);
 
@@ -174,7 +173,6 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
 
 		//将秒杀下单(保存订单)任务存入缓存中
 		redisTemplate.boundListOps("seckill_order_queue").leftPush(params);
-
 		//基于多线程，调用秒杀下单的程序
 		executor.execute(createOrder);
 	}

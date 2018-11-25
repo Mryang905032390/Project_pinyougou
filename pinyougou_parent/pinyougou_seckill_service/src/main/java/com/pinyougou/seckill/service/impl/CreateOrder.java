@@ -17,10 +17,8 @@ public class CreateOrder implements Runnable{
 
     @Autowired
     private RedisTemplate redisTemplate;
-
     @Autowired
     private IdWorker idWorker;
-
     @Autowired
     private TbSeckillGoodsMapper seckillGoodsMapper;
     @Autowired
@@ -55,10 +53,8 @@ public class CreateOrder implements Runnable{
 
         seckillOrderMapper.insert(seckillOrder);
 
-
         //在缓存中记录，该用户购买了那个商品
         redisTemplate.boundSetOps("seckill_user_goods"+seckillGoodsId).add(userId);
-
 
         //秒杀下单完成后，扣减库存
         seckillGoods.setStockCount(seckillGoods.getStockCount()-1);

@@ -39,6 +39,10 @@
         <module>pinyougou_pay_interface</module>
         <module>pinyougou_pay_service</module>
         <module>pinyougou_pay_web</module>
+        <module>pinyougou_seckill_interface</module>
+        <module>pinyougou_seckill_service</module>
+        <module>pinyougou_seckill_web</module>
+        <module>pinyougou_seckill_task</module>
     </modules>
     <packaging>pom</packaging>
 

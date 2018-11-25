@@ -95,7 +95,7 @@ public class PayServiceImpl implements PayService {
         tbPayLog.setTransactionId(transaction_id);
         payLogMapper.updateByPrimaryKey(tbPayLog);
 
-        String orderList = tbPayLog.getTransactionId();
+        String orderList = tbPayLog.getOrderList();
         String[] ids = orderList.split(",");
         for (String id : ids) {
             TbOrder tbOrder = orderMapper.selectByPrimaryKey(Long.parseLong(id));
